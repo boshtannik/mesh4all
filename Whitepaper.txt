@@ -1,7 +1,32 @@
-This is the whitepaper for the one layer multi purpose mesh protocol:
+Mesh4All (M4A) - one layer multi purpose mesh network protocol:
 
-The protocol lets building one layer mesh network with all nodes sharing same instuctions
-following same rules
+Goal:
+	Build one layer mesh network out of all available
+	hardware which is available today on the market:
+	* Microcontrollers + radio modules
+	* Personal computers
+
+Node - Instance of M4A protocol. It can be:
+				* One of instances of process working on computer.
+				* Instance of firmware on the microcontroller.
+				* M4A router.
+
+Octet - Unit of addressing, used within this protocol.
+
+Path - Is the sequence of octets that describes which nodes
+				the packet should be transferred trough to reach
+				it's destination.
+
+Pros and cons of protocol:
+	* Uses 'octet' addressing for every node.
+	* Unlike the port in ipv4 - uses octet to distinguish
+			specific program instance running on computer.
+			It leads to simplification of protocol's logic.
+	* Has variable path length between nodes.
+	* Secure communication.
+	* Communication can not be violated.
+
+This protocol operates in 2 - 5 layers of OSI model.
 
 OSI Layer 1 (Physical layer):
 	* Interchangable
@@ -18,10 +43,8 @@ OSI Layer 3 (Network layer):
 	* Sometimes fragmentation of packets
 
 OSI Layer 4 (Transport layer):
-	* Process to process transport service
-	* Reliable / Unreliable transporting
+	* (Reliable / Unreliable) transporting
 	* Retransmission
-	* Sequencing
 	* Segmentation and Collecting segments
 
 OSI Layer 5 (Session layer):
