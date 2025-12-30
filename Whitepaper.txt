@@ -1,0 +1,28 @@
+This is the whitepaper for the one layer multi purpose mesh protocol:
+
+The protocol lets building one layer mesh network with all nodes sharing same instuctions
+following same rules
+
+OSI Layer 1 (Physical layer):
+	* Interchangable
+
+OSI Layer 2 (Data layer):
+	* Framing information
+	* Local addressing
+	* Error detection / correction
+
+OSI Layer 3 (Network layer):
+	* Provides end to end delivery mechanism
+	* Logical addressing
+	* Routing / Forwarding
+	* Sometimes fragmentation of packets
+
+OSI Layer 4 (Transport layer):
+	* Process to process transport service
+	* Reliable / Unreliable transporting
+	* Retransmission
+	* Sequencing
+	* Segmentation and Collecting segments
+
+OSI Layer 5 (Session layer):
+
