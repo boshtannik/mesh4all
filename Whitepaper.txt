@@ -1,30 +1,134 @@
-Mesh4All (M4A) - one layer multi purpose mesh network protocol:
+Mesh4All (M4A) - one layer next generation mesh network protocol:
 
-Goal:
-	Build one layer mesh network out of all available
-	hardware which is available today on the market:
-	* Microcontrollers + radio modules
-	* Personal computers
+Goals:
+    * Build next generation way of interconnecting devices:
+        * Computers
+        * Microcontrollers
+        * Mobile devices
+        * IoT devices
+        * etc.,
 
-Node - Instance of M4A protocol. It can be:
-				* One of instances of process working on computer.
-				* Instance of firmware on the microcontroller.
-				* M4A router.
+    * Be integratable into already existing network infrastructure. (Later goal)
+    * Be simple in use.
+    * Provide secure way of data exchange by default.
+    * Zero conf network.
+    * Provide scalable, network with option to:
+        Establish connection for start session.
+        Reestablish connection to maintain session.
+        Optimize connection to balance load on network.
 
-Octet - Unit of addressing, used within this protocol.
+Terms:
+    Node - Device running Instance of M4A protocol. It can be:
+           * Firmware running on microcontroller.
+    	   * One of instances of process working on computer.
+    	   * Router with Mesh4All protocol installed.
 
-Path - Is the sequence of octets that describes which nodes
-				the packet should be transferred trough to reach
-				it's destination.
+    Address - Is the unit of addressing, used within this protocol.
+              It is used by node to distinguish it's closest neighbor node.
+              The size of 1 Address unit depends on specified value, which says
+              how many bytes 1 Address unit uses.
+              So the value of address.
+
+    Path - Is the sequence of Address unit values that describes which nodes
+    	the packet should be transferred trough - to reach it's destination.
+
+    	The length of path is also specified within the header.
+
+        For 1 byte Address size with length of 4 path in hopss it looks like:
+        156.208.16.24
+
+        For 1 byte Address with the length of path of 2 hops:
+        132.127
+
+        For 2 bytes Address with the length of path of 5 hops:
+        65530.128.312.64.32330
+
+    Path exploration - Process of establishing the shortest or fastest
+                       path between nodes. The way of establishing of path
+                       partially inspired by ant colony path finding algorithm.
+                       The way it works - is provided in "Path exploration"
+                       section below.
+
+    Path initiation device - Device that starts the process of path exploration
+                             to responding device.
+
+    Path responding device - Device that has "greeting-init" message received,
+                             decrypts it, and sends encrypted
+                             "greeting-response".
+
+    Greeting-init - Packet that contains the flag, that tells that the packet
+                    is used to find path to the device, which will be able to
+                    decrypt and respond to originator of that message.
+
+    Greeting-response - Packet that contains the flag, that tells that this
+                        packet is used to provide explored packet to the
+                        originator of Path exploration device with the sequence
+                        of Address'es to provide to the originator explored
+                        path to use.
+
+In first of all, no Node has path to other node to communicate after
+being initialized. Every node boots with any random value of Address - so
+the network is always dynamic.
+
+To establish path between nodes, they use the Path exploration process.
+
+Path exploration principle description:
+    Path exploration was inspired by natural phenomena, named as ant colony
+    path finding algorithm.
+
+    Each device communicates with other only by:
+    Establishing connection via pairs of secret phrases or keypairs.
+
+    In that phase node does not know path to other node to communicate, so it
+    has to establish the connection by exploring the path trough the network.
+
+    1 - Initiation device sends encrypted "greeting-init" message into the
+        ether and waits for remote device to decrypt it and respond with it's
+        own encrypted "greeting-response" which Initiation device can decrypt.
+
+    2 - While "greeting-init" packet travelling trough the network,
+        each transit device reduces value of lifetime by 1, if the value is
+        still valuable - device adds it's own address to the path, recauculates
+        checksum of the packet. If device can not decrypt the "greeting-init"
+        then it transits the packet back into the ether. Otherwise it handles
+        it as it is described in Destination reached section.
+
+    3 - Destination reached - on explore packet has reached it's destination
+        (device which can decrypt greeting message and respond with encrypted
+        "greeting-response" message) - the node waits for some period of time
+        to recieve similar greeting-init messages that went by other paths,
+        in order to later compare those paths and choose the best one based
+        on the one of strategies
+        (PATH_OPTIMIZATION_STRATEGY):
+            * Shortest path
+            * Fastest path
+            * Use All
+
+    4 - After best path has been chosen, device sends "greeting-response"
+        packet by the reversed explored path to the originator of the
+        "greeting-init" packet.
 
 Pros and cons of protocol:
-	* Uses 'octet' addressing for every node.
-	* Unlike the port in ipv4 - uses octet to distinguish
-			specific program instance running on computer.
-			It leads to simplification of protocol's logic.
+    * No need to configure network by hand.
+        it finds and remembers the paths between nodes automatically.
+        (Zero configuration network)
+
+	* Unlike the idea of port number in ipv4 - M4A uses additional Address to:
+	    * Distinguish specific program instance running on computer.
+		* Simplify of protocol's logic.
+		* If multiple network services works salmunteinously on
+		    the same machine - they still can be distinguished by
+		    their own additional Address.
+		* If processor runs only 1 instance of application - there is no extra
+		    need to bind firmware with additional addressing Address. So whole
+		    device can use only one addressing Address for it's firmware and
+		    no port numbers are needed.
+
 	* Has variable path length between nodes.
-	* Secure communication.
-	* Communication can not be violated.
+
+	* Follows the principles of safety and autonomy.
+
+	* Flat 1 layer network with no need of external network governing.
 
 This protocol operates in 2 - 5 layers of OSI model.
 
@@ -32,20 +136,27 @@ OSI Layer 1 (Physical layer):
 	* Interchangable
 
 OSI Layer 2 (Data layer):
-	* Framing information
-	* Local addressing
-	* Error detection / correction
+    * Has 1 Address.
+	* Framing information.
+	* Local addressing.
+	* Error detection / correction.
 
 OSI Layer 3 (Network layer):
-	* Provides end to end delivery mechanism
-	* Logical addressing
-	* Routing / Forwarding
-	* Sometimes fragmentation of packets
+    * Manages whole path of Address'es.
+	* Provides end to end delivery mechanism.
+	* Logical addressing.
+	* Routing / Forwarding.
+	* Sometimes fragmentation of packets.
 
 OSI Layer 4 (Transport layer):
-	* (Reliable / Unreliable) transporting
-	* Retransmission
-	* Segmentation and Collecting segments
+	* (Reliable / Unreliable) transporting.
+	* Retransmission.
+	* Segmentation and Collecting segments.
 
 OSI Layer 5 (Session layer):
+    * Handles security.
 
+
+OSI Layer 1
+
+OSI Layer 2
