@@ -29,19 +29,19 @@ Terms:
               how many bytes 1 Address unit uses.
               So the value of address.
 
-    Path - Is the sequence of Address unit values that describes which nodes
-    	the packet should be transferred trough - to reach it's destination.
+    Path -  Is the sequence of Address unit values that describes which nodes
+    	    the packet should be transferred trough - to reach it's destination.
 
-    	The length of path is also specified within the header.
+    	    The length of path is also specified within the header.
 
-        For 1 byte Address size with length of 4 path in hopss it looks like:
-        156.208.16.24
+            For 1 byte Address size with length of 4 path in hopss it looks like:
+            156.208.16.24
 
-        For 1 byte Address with the length of path of 2 hops:
-        132.127
+            For 1 byte Address with the length of path of 2 hops:
+            132.127
 
-        For 2 bytes Address with the length of path of 5 hops:
-        65530.128.312.64.32330
+            For 2 bytes Address with the length of path of 5 hops:
+            65530.128.312.64.32330
 
     Path exploration - Process of establishing the shortest or fastest
                        path between nodes. The way of establishing of path
